@@ -40,6 +40,15 @@ bool affiche_sol = false;
 
 pthread_mutex_t mutex;
 
+int compt = 0;
+
+typedef struct t_args {
+    long long int *cuts;
+    tsp_path_t *sol;
+    int *sol_len;
+    struct tsp_queue *q;
+} t_args;
+
 static void generate_tsp_jobs(struct tsp_queue *q, int hops, int len, tsp_path_t path, long long int *cuts, tsp_path_t sol, int *sol_len, int depth) {
     if (len >= minimum) {
         (*cuts)++;
@@ -66,10 +75,15 @@ static void usage(const char *name) {
     exit(-1);
 }
 
-void fonctionThread(struct tsp_queue *q, tsp_path_t solution, long long int *cuts, tsp_path_t sol, int *sol_len) {
-    int hops = 0, len = 0;
-    get_job(q, solution, &hops, &len);
-    tsp(hops, len, solution, cuts, sol, sol_len);
+void *fonctionThread(void * args) {
+    t_args * thread_args = (t_args *) args;
+    tsp_path_t solution;
+    memset(solution, -1, MAX_TOWNS * sizeof (int));
+    solution[0] = 0;
+    int hops, len = 0;
+    get_job(thread_args->q, solution, &hops, &len);
+    tsp(hops, len, solution, thread_args->cuts, *thread_args->sol, thread_args->sol_len);
+    pthread_exit(NULL);
 }
 
 int main(int argc, char **argv) {
@@ -118,16 +132,23 @@ int main(int argc, char **argv) {
     memset(path, -1, MAX_TOWNS * sizeof (int));
     path[0] = 0;
 
+    pthread_t threads[nb_threads];
+
     /* mettre les travaux dans la file d'attente */
     generate_tsp_jobs(&q, 1, 0, path, &cuts, sol, & sol_len, 3);
     no_more_jobs(&q);
 
     /* calculer chacun des travaux */
-    tsp_path_t solution;
-    memset(solution, -1, MAX_TOWNS * sizeof (int));
-    solution[0] = 0;
+    t_args * thread_args = malloc(sizeof(t_args));
+    thread_args->q = &q;
+    thread_args->cuts = &cuts;
+    thread_args->sol = &sol;
+    thread_args->sol_len = &sol_len;
+    int i=0;
     while (!empty_queue(&q)) {
-        fonctionThread(&q, solution, &cuts, sol, &sol_len);
+        if (pthread_create(&threads[i++], NULL, fonctionThread, (void *)&thread_args)) {
+            printf("error creating thread");
+        }
     }
 
     pthread_mutex_destroy(&mutex);

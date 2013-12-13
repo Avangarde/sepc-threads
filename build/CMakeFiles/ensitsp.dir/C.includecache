@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-genmap.c
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-genmap.c
 stdio.h
 -
 stdlib.h
@@ -24,13 +24,13 @@ assert.h
 complex.h
 -
 tsp-types.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-types.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-types.h
 tsp-genmap.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-genmap.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-genmap.h
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-genmap.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-genmap.h
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-job.c
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-job.c
 stdlib.h
 -
 stdio.h
@@ -40,13 +40,13 @@ string.h
 pthread.h
 -
 tsp-types.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-types.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-types.h
 tsp-job.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-job.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-job.h
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-job.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-job.h
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-main-para.c
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-main-para.c
 stdio.h
 -
 stdlib.h
@@ -70,35 +70,35 @@ unistd.h
 pthread.h
 -
 tsp-types.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-types.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-types.h
 tsp-job.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-job.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-job.h
 tsp-genmap.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-genmap.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-genmap.h
 tsp-print.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-print.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-print.h
 tsp-tsp.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-tsp.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-tsp.h
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-print.c
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-print.c
 stdio.h
 -
 tsp-print.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-print.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-print.h
 tsp-types.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-types.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-types.h
 tsp-genmap.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-genmap.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-genmap.h
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-print.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-print.h
 tsp-types.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-types.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-types.h
 tsp-genmap.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-genmap.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-genmap.h
 stdbool.h
 -
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-tsp.c
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-tsp.c
 assert.h
 -
 string.h
@@ -106,15 +106,15 @@ string.h
 pthread.h
 -
 tsp-types.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-types.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-types.h
 tsp-genmap.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-genmap.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-genmap.h
 tsp-print.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-print.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-print.h
 tsp-tsp.h
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-tsp.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-tsp.h
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-tsp.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-tsp.h
 
-/user/7/rojascle/Documents/SEPC/sepc-threads/src/tsp-types.h
+/user/1/.base/corteshs/home/tp/SEPC/sepc-threads/src/tsp-types.h
 
