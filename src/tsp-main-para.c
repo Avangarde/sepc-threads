@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
     memset(path, -1, MAX_TOWNS * sizeof (int));
     path[0] = 0;
 
-    pthread_t threads[nb_threads];
+    //pthread_t threads[nb_threads];
 
     /* mettre les travaux dans la file d'attente */
     generate_tsp_jobs(&q, 1, 0, path, &cuts, sol, & sol_len, 3);
@@ -144,11 +144,13 @@ int main(int argc, char **argv) {
     thread_args->cuts = &cuts;
     thread_args->sol = &sol;
     thread_args->sol_len = &sol_len;
-    int i=0;
+    //int i=0;
     while (!empty_queue(&q)) {
-        if (pthread_create(&threads[i++], NULL, fonctionThread, (void *)&thread_args)) {
-            printf("error creating thread");
-        }
+        fonctionThread(thread_args);
+//        if (pthread_create(&threads[0], NULL, fonctionThread, (void *)&thread_args)) {
+//            printf("error creating thread");
+//        }
+//        pthread_join(threads[0], NULL);
     }
 
     pthread_mutex_destroy(&mutex);
