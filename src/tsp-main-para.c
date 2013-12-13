@@ -66,7 +66,10 @@ static void usage(const char *name) {
     exit(-1);
 }
 
-void fonctionThread(struct tsp_queue *q, tsp_path_t solution, long long int *cuts, tsp_path_t sol, int *sol_len) {
+void fonctionThread(struct tsp_queue *q, long long int *cuts, tsp_path_t sol, int *sol_len) {
+    tsp_path_t solution;
+    memset(solution, -1, MAX_TOWNS * sizeof (int));
+    solution[0] = 0;
     int hops = 0, len = 0;
     get_job(q, solution, &hops, &len);
     tsp(hops, len, solution, cuts, sol, sol_len);
@@ -123,11 +126,8 @@ int main(int argc, char **argv) {
     no_more_jobs(&q);
 
     /* calculer chacun des travaux */
-    tsp_path_t solution;
-    memset(solution, -1, MAX_TOWNS * sizeof (int));
-    solution[0] = 0;
     while (!empty_queue(&q)) {
-        fonctionThread(&q, solution, &cuts, sol, &sol_len);
+        fonctionThread(&q, &cuts, sol, &sol_len);
     }
 
     pthread_mutex_destroy(&mutex);
