@@ -1,8 +1,10 @@
-/* implémentation des queues de jobs, nul besoin de lire dans un premier temps */
+/* implï¿½mentation des queues de jobs, nul besoin de lire dans un premier temps */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#include <pthread.h>
 
 #include "tsp-types.h"
 #include "tsp-job.h"
@@ -17,6 +19,8 @@ struct tsp_cell {
     struct tsp_job tsp_job;
     struct tsp_cell *next;
 };
+
+extern pthread_mutex_t mutex;
 
 void init_queue (struct tsp_queue *q) {
     q->first = 0;
@@ -40,18 +44,20 @@ void add_job (struct tsp_queue *q, tsp_path_t p, int hops, int len) {
    ptr->tsp_job.len = len;
    ptr->tsp_job.hops = hops;
    memcpy (ptr->tsp_job.path, p, hops * sizeof(p[0]));
-   
+      
    if (q->first == 0) {
        q->first = q->last = ptr;
    } else {
        q->last->next = ptr;
        q->last = ptr;
-   }
+   }  
 }
 
 int get_job (struct tsp_queue *q, tsp_path_t p, int *hops, int *len) {
    struct tsp_cell *ptr;
    
+   //Exclusion mutuelle
+   pthread_mutex_lock(&mutex);
    if (q->first == 0) {
        return 0;
    }
@@ -62,6 +68,7 @@ int get_job (struct tsp_queue *q, tsp_path_t p, int *hops, int *len) {
    if (q->first == 0) {
        q->last = 0;
    }
+   pthread_mutex_unlock(&mutex);
 
    *len = ptr->tsp_job.len;
    *hops = ptr->tsp_job.hops;

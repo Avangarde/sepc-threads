@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /user/1/.base/corteshs/home/tp/SEPC/ensimag-threads
+CMAKE_SOURCE_DIR = /user/7/rojascle/Documents/SEPC/sepc-threads
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /user/1/.base/corteshs/home/tp/SEPC/ensimag-threads/build
+CMAKE_BINARY_DIR = /user/7/rojascle/Documents/SEPC/sepc-threads/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -70,7 +70,7 @@ package/fast: package
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
-	/usr/bin/cpack --config ./CPackSourceConfig.cmake /user/1/.base/corteshs/home/tp/SEPC/ensimag-threads/build/CPackSourceConfig.cmake
+	/usr/bin/cpack --config ./CPackSourceConfig.cmake /user/7/rojascle/Documents/SEPC/sepc-threads/build/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -99,9 +99,9 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /user/1/.base/corteshs/home/tp/SEPC/ensimag-threads/build/CMakeFiles /user/1/.base/corteshs/home/tp/SEPC/ensimag-threads/build/CMakeFiles/progress.make
+	$(CMAKE_COMMAND) -E cmake_progress_start /user/7/rojascle/Documents/SEPC/sepc-threads/build/CMakeFiles /user/7/rojascle/Documents/SEPC/sepc-threads/build/CMakeFiles/progress.make
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /user/1/.base/corteshs/home/tp/SEPC/ensimag-threads/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /user/7/rojascle/Documents/SEPC/sepc-threads/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
