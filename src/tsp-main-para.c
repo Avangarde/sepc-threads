@@ -42,6 +42,8 @@ pthread_mutex_t mutex;
 
 int compt = 0;
 
+void * ALL_IS_OK = (void*) 123456789L;
+
 typedef struct t_args {
     long long int *cuts;
     tsp_path_t *sol;
@@ -83,7 +85,8 @@ void *fonctionThread(void * args) {
     int hops, len = 0;
     get_job(thread_args->q, solution, &hops, &len);
     tsp(hops, len, solution, thread_args->cuts, *thread_args->sol, thread_args->sol_len);
-    pthread_exit(NULL);
+    //pthread_exit(NULL);
+    return ALL_IS_OK;
 }
 
 int main(int argc, char **argv) {
@@ -132,7 +135,7 @@ int main(int argc, char **argv) {
     memset(path, -1, MAX_TOWNS * sizeof (int));
     path[0] = 0;
 
-    //pthread_t threads[nb_threads];
+    pthread_t threads[nb_threads];
 
     /* mettre les travaux dans la file d'attente */
     generate_tsp_jobs(&q, 1, 0, path, &cuts, sol, & sol_len, 3);
@@ -146,18 +149,14 @@ int main(int argc, char **argv) {
     thread_args->sol_len = &sol_len;
     //int i=0;
     while (!empty_queue(&q)) {
-        fonctionThread(thread_args);
-//        if (pthread_create(&threads[0], NULL, fonctionThread, (void *)&thread_args)) {
-//            printf("error creating thread");
-//        }
-//        pthread_join(threads[0], NULL);
+//        fonctionThread(thread_args);
+        if (pthread_create(&threads[0], NULL, fonctionThread, (void *)thread_args)) {
+            printf("error creating thread");
+        }
+        pthread_join(threads[0], NULL);
     }
 
-    pthread_mutex_destroy(&mutex);
-
-
     clock_gettime(CLOCK_REALTIME, &t2);
-
     if (affiche_sol)
         print_solution_svg(sol, sol_len);
 
@@ -165,6 +164,6 @@ int main(int argc, char **argv) {
     printf("<!-- # = %d seed = %ld len = %d threads = %d time = %lld.%03lld ms ( %lld coupures ) -->\n",
             nb_towns, myseed, sol_len, nb_threads,
             perf / 1000000ll, perf % 1000000ll, cuts);
-
+    pthread_mutex_destroy(&mutex);
     return 0;
 }

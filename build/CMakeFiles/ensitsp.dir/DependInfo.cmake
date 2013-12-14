@@ -4,11 +4,11 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_C
-  "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/src/tsp-genmap.c" "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-genmap.c.o"
-  "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/src/tsp-job.c" "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-job.c.o"
-  "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/src/tsp-main-para.c" "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-main-para.c.o"
-  "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/src/tsp-print.c" "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-print.c.o"
-  "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/src/tsp-tsp.c" "/user/7/.base/rojascle/home/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-tsp.c.o"
+  "/home/edward/Documents/SEPC/sepc-threads/src/tsp-genmap.c" "/home/edward/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-genmap.c.o"
+  "/home/edward/Documents/SEPC/sepc-threads/src/tsp-job.c" "/home/edward/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-job.c.o"
+  "/home/edward/Documents/SEPC/sepc-threads/src/tsp-main-para.c" "/home/edward/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-main-para.c.o"
+  "/home/edward/Documents/SEPC/sepc-threads/src/tsp-print.c" "/home/edward/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-print.c.o"
+  "/home/edward/Documents/SEPC/sepc-threads/src/tsp-tsp.c" "/home/edward/Documents/SEPC/sepc-threads/build/CMakeFiles/ensitsp.dir/src/tsp-tsp.c.o"
   )
 SET(CMAKE_C_COMPILER_ID "GNU")
 
