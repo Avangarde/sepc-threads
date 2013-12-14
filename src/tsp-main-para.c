@@ -41,6 +41,8 @@ bool affiche_sol = false;
 pthread_mutex_t mutexQueue;
 pthread_mutex_t mutex;
 
+int *thread_matrix;
+
 int compt = 0;
 
 void * ALL_IS_OK = (void*) 123456789L;
@@ -90,6 +92,24 @@ void *fonctionThread(void * args) {
     //pthread_exit(NULL);
     printf("thread end\n");
     return ALL_IS_OK;
+}
+
+void init_thread_matrix() {
+    thread_matrix = malloc(nb_threads * sizeof (int));
+
+    for (int i = 0; i < nb_threads; i++) {
+        thread_matrix[i] = 0;
+    }
+}
+
+int get_unused_thread() {
+    for (int i = 0; i < nb_threads; i++) {
+        if (thread_matrix[i] == 0) {
+            return i;
+        }
+    }
+    
+    return -1;
 }
 
 int main(int argc, char **argv) {
@@ -145,8 +165,11 @@ int main(int argc, char **argv) {
     generate_tsp_jobs(&q, 1, 0, path, &cuts, sol, & sol_len, 3);
     no_more_jobs(&q);
 
+    //initialiser un matrix pour savoir quelles sont les threads qui sont occupes
+    init_thread_matrix();
+
     /* calculer chacun des travaux */
-    t_args * thread_args = malloc(sizeof(t_args));
+    t_args * thread_args = malloc(sizeof (t_args));
     thread_args->q = &q;
     thread_args->cuts = &cuts;
     thread_args->sol = &sol;
@@ -157,6 +180,7 @@ int main(int argc, char **argv) {
         for (int i = 0; i < nb_threads; i++) {
 			if (!empty_queue(&q)) {
 				printf("On utilice le thread %d\n", i);
+				thread_matrix[i] = 1;
 		        if (pthread_create(&threads[i], NULL, fonctionThread, (void *)thread_args)) {
                     printf("error creating thread");
                 }
@@ -165,8 +189,11 @@ int main(int argc, char **argv) {
 			}
 		}
 		for (int i = 0; i < nb_threads; i++) {
-            printf("On attend le thread %d\n", i);
-            pthread_join(threads[i], NULL);
+			if (thread_matrix[i] == 1) {
+                printf("On attend le thread %d\n", i);
+                thread_matrix[i] = 0;
+                pthread_join(threads[i], NULL);
+		    }
 		}
     }
 
