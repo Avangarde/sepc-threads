@@ -38,6 +38,7 @@ int nb_threads = 1;
 /* affichage SVG */
 bool affiche_sol = false;
 
+pthread_mutex_t mutexQueue;
 pthread_mutex_t mutex;
 
 int compt = 0;
@@ -78,6 +79,7 @@ static void usage(const char *name) {
 }
 
 void *fonctionThread(void * args) {
+	printf("thread start\n");
     t_args * thread_args = (t_args *) args;
     tsp_path_t solution;
     memset(solution, -1, MAX_TOWNS * sizeof (int));
@@ -86,6 +88,7 @@ void *fonctionThread(void * args) {
     get_job(thread_args->q, solution, &hops, &len);
     tsp(hops, len, solution, thread_args->cuts, *thread_args->sol, thread_args->sol_len);
     //pthread_exit(NULL);
+    printf("thread end\n");
     return ALL_IS_OK;
 }
 
@@ -99,6 +102,7 @@ int main(int argc, char **argv) {
     struct timespec t1, t2;
 
     pthread_mutex_init(&mutex, NULL);
+    pthread_mutex_init(&mutexQueue, NULL);
 
     /* lire les arguments */
     int opt;
@@ -150,10 +154,20 @@ int main(int argc, char **argv) {
     //int i=0;
     while (!empty_queue(&q)) {
 //        fonctionThread(thread_args);
-        if (pthread_create(&threads[0], NULL, fonctionThread, (void *)thread_args)) {
-            printf("error creating thread");
-        }
-        pthread_join(threads[0], NULL);
+        for (int i = 0; i < nb_threads; i++) {
+			if (!empty_queue(&q)) {
+				printf("On utilice le thread %d\n", i);
+		        if (pthread_create(&threads[i], NULL, fonctionThread, (void *)thread_args)) {
+                    printf("error creating thread");
+                }
+		    } else {
+				printf("On utilise pas le thread %d\n", i);
+			}
+		}
+		for (int i = 0; i < nb_threads; i++) {
+            printf("On attend le thread %d\n", i);
+            pthread_join(threads[i], NULL);
+		}
     }
 
     clock_gettime(CLOCK_REALTIME, &t2);
@@ -164,6 +178,7 @@ int main(int argc, char **argv) {
     printf("<!-- # = %d seed = %ld len = %d threads = %d time = %lld.%03lld ms ( %lld coupures ) -->\n",
             nb_towns, myseed, sol_len, nb_threads,
             perf / 1000000ll, perf % 1000000ll, cuts);
+    pthread_mutex_destroy(&mutexQueue);        
     pthread_mutex_destroy(&mutex);
     return 0;
 }

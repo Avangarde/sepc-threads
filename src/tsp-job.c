@@ -20,7 +20,7 @@ struct tsp_cell {
     struct tsp_cell *next;
 };
 
-extern pthread_mutex_t mutex;
+extern pthread_mutex_t mutexQueue;
 
 void init_queue (struct tsp_queue *q) {
     q->first = 0;
@@ -57,18 +57,19 @@ int get_job (struct tsp_queue *q, tsp_path_t p, int *hops, int *len) {
    struct tsp_cell *ptr;
    
    //Exclusion mutuelle
-   pthread_mutex_lock(&mutex);
+   //pthread_mutex_lock(&mutex);
    if (q->first == 0) {
+	   //pthread_mutex_unlock(&mutex);
        return 0;
    }
-   
+   pthread_mutex_lock(&mutexQueue);
    ptr = q->first;
    
    q->first = ptr->next;
    if (q->first == 0) {
        q->last = 0;
    }
-   pthread_mutex_unlock(&mutex);
+   pthread_mutex_unlock(&mutexQueue);
 
    *len = ptr->tsp_job.len;
    *hops = ptr->tsp_job.hops;
