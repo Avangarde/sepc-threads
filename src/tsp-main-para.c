@@ -38,6 +38,8 @@ int nb_threads = 1;
 /* affichage SVG */
 bool affiche_sol = false;
 
+int *thread_matrix;
+
 pthread_mutex_t mutex;
 
 int compt = 0;
@@ -87,6 +89,24 @@ void *fonctionThread(void * args) {
     tsp(hops, len, solution, thread_args->cuts, *thread_args->sol, thread_args->sol_len);
     //pthread_exit(NULL);
     return ALL_IS_OK;
+}
+
+void init_thread_matrix() {
+    thread_matrix = malloc(nb_threads * sizeof (int));
+
+    for (int i = 0; i < nb_threads; i++) {
+        thread_matrix[i] = 0;
+    }
+}
+
+int get_unused_thread() {
+    for (int i = 0; i < nb_threads; i++) {
+        if (thread_matrix[i] == 0) {
+            return i;
+        }
+    }
+    
+    return -1;
 }
 
 int main(int argc, char **argv) {
@@ -141,19 +161,27 @@ int main(int argc, char **argv) {
     generate_tsp_jobs(&q, 1, 0, path, &cuts, sol, & sol_len, 3);
     no_more_jobs(&q);
 
+    //initialiser un matrix pour savoir quelles sont les threads qui sont occupes
+    init_thread_matrix();
+
     /* calculer chacun des travaux */
-    t_args * thread_args = malloc(sizeof(t_args));
+    t_args * thread_args = malloc(sizeof (t_args));
     thread_args->q = &q;
     thread_args->cuts = &cuts;
     thread_args->sol = &sol;
     thread_args->sol_len = &sol_len;
     //int i=0;
     while (!empty_queue(&q)) {
-//        fonctionThread(thread_args);
-        if (pthread_create(&threads[0], NULL, fonctionThread, (void *)thread_args)) {
+        //        fonctionThread(thread_args);
+
+        int n_thread = get_unused_thread();
+
+        thread_matrix[n_thread] = 1;
+        if (pthread_create(&threads[n_thread], NULL, fonctionThread, (void *) thread_args)) {
             printf("error creating thread");
         }
-        pthread_join(threads[0], NULL);
+        pthread_join(threads[n_thread], NULL);
+        thread_matrix[n_thread] = 0;
     }
 
     clock_gettime(CLOCK_REALTIME, &t2);
