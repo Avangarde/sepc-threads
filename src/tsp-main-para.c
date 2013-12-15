@@ -86,10 +86,11 @@ void *fonctionThread(void * args) {
     tsp_path_t solution;
     memset(solution, -1, MAX_TOWNS * sizeof (int));
     solution[0] = 0;
-    int hops, len = 0;
-    get_job(thread_args->q, solution, &hops, &len);
-    tsp(hops, len, solution, thread_args->cuts, *thread_args->sol, thread_args->sol_len);
-    //pthread_exit(NULL);
+    while (!empty_queue (thread_args->q)) {
+        int hops, len = 0;
+        get_job(thread_args->q, solution, &hops, &len);
+        tsp(hops, len, solution, thread_args->cuts, *thread_args->sol, thread_args->sol_len);
+    }
     printf("thread end\n");
     return ALL_IS_OK;
 }
@@ -159,43 +160,62 @@ int main(int argc, char **argv) {
     memset(path, -1, MAX_TOWNS * sizeof (int));
     path[0] = 0;
 
-    pthread_t threads[nb_threads];
-
     /* mettre les travaux dans la file d'attente */
     generate_tsp_jobs(&q, 1, 0, path, &cuts, sol, & sol_len, 3);
     no_more_jobs(&q);
+    
+    pthread_t threads[nb_threads];
+    t_args * thread_args[nb_threads];
+    struct tsp_queue queues[nb_threads];
 
     //initialiser un matrix pour savoir quelles sont les threads qui sont occupes
     init_thread_matrix();
-
-    /* calculer chacun des travaux */
-    t_args * thread_args = malloc(sizeof (t_args));
-    thread_args->q = &q;
-    thread_args->cuts = &cuts;
-    thread_args->sol = &sol;
-    thread_args->sol_len = &sol_len;
-    //int i=0;
+    
+    for (int i = 0; i < nb_threads; i++) {
+		thread_args[i] = malloc(sizeof(t_args));
+		init_queue(&queues[i]);
+        thread_args[i]->q = &queues[i];
+        thread_args[i]->cuts = &cuts;
+        thread_args[i]->sol = &sol;
+        thread_args[i]->sol_len = &sol_len;
+    }
+    
+    printf("estructuras asignadas");
+    
+    //Distribuer les jobs pour chaque thread
     while (!empty_queue(&q)) {
-//        fonctionThread(thread_args);
-        for (int i = 0; i < nb_threads; i++) {
+		for (int i = 0; i < nb_threads; i++) {
 			if (!empty_queue(&q)) {
-				printf("On utilice le thread %d\n", i);
-				thread_matrix[i] = 1;
-		        if (pthread_create(&threads[i], NULL, fonctionThread, (void *)thread_args)) {
-                    printf("error creating thread");
-                }
-		    } else {
-				printf("On utilise pas le thread %d\n", i);
+				tsp_path_t solution;
+                memset(solution, -1, MAX_TOWNS * sizeof (int));
+                solution[0] = 0;
+                int hops, len = 0;
+                get_job(&q, solution, &hops, &len);
+                add_job (&queues[i], solution, hops, len);
+			} else {
+				break;
 			}
 		}
-		for (int i = 0; i < nb_threads; i++) {
-			if (thread_matrix[i] == 1) {
-                printf("On attend le thread %d\n", i);
-                thread_matrix[i] = 0;
-                pthread_join(threads[i], NULL);
-		    }
+	}
+	printf("Jobs asignados");
+
+    /* calculer chacun des travaux */
+    for (int i = 0; i < nb_threads; i++) {
+		no_more_jobs(&queues[i]); //TODO arreglar esta chambonada
+		printf("On utilice le thread %d\n", i);
+		thread_matrix[i] = 1;
+		if (pthread_create(&threads[i], NULL, fonctionThread, (void *)thread_args[i])) {
+                    printf("error creating thread");
+        }
+	}	    
+		
+	for (int i = 0; i < nb_threads; i++) {
+		if (thread_matrix[i] == 1) {
+            printf("On attend le thread %d\n", i);
+            thread_matrix[i] = 0;
+            pthread_join(threads[i], NULL);
 		}
-    }
+	}
 
     clock_gettime(CLOCK_REALTIME, &t2);
     if (affiche_sol)

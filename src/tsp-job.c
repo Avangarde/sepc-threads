@@ -62,14 +62,14 @@ int get_job (struct tsp_queue *q, tsp_path_t p, int *hops, int *len) {
 	   //pthread_mutex_unlock(&mutex);
        return 0;
    }
-   pthread_mutex_lock(&mutexQueue);
+   //pthread_mutex_lock(&mutexQueue);
    ptr = q->first;
    
    q->first = ptr->next;
    if (q->first == 0) {
        q->last = 0;
    }
-   pthread_mutex_unlock(&mutexQueue);
+   //pthread_mutex_unlock(&mutexQueue);
 
    *len = ptr->tsp_job.len;
    *hops = ptr->tsp_job.hops;
