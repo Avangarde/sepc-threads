@@ -28,13 +28,13 @@ int present(int city, int hops, tsp_path_t path) {
 void tsp(int hops, int len, tsp_path_t path, long long int *cuts, tsp_path_t sol, int *sol_len) {
 
     //Exclusion mutuelle
-    pthread_mutex_lock(&mutex);
+    //pthread_mutex_lock(&mutex);
     if (len + cutprefix[(nb_towns - hops)] >= minimum) {
         (*cuts)++;
-        pthread_mutex_unlock(&mutex);
+        //pthread_mutex_unlock(&mutex);
         return;
     } else {
-        pthread_mutex_unlock(&mutex);
+        //pthread_mutex_unlock(&mutex);
     }
 
     if (hops == nb_towns) {

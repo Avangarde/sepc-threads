@@ -57,9 +57,9 @@ int get_job (struct tsp_queue *q, tsp_path_t p, int *hops, int *len) {
    struct tsp_cell *ptr;
    
    //Exclusion mutuelle
-   //pthread_mutex_lock(&mutex);
+   //pthread_mutex_lock(&mutexQueue);
    if (q->first == 0) {
-	   //pthread_mutex_unlock(&mutex);
+	   //pthread_mutex_unlock(&mutexQueue);
        return 0;
    }
    //pthread_mutex_lock(&mutexQueue);

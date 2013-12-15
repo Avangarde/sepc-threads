@@ -41,8 +41,6 @@ bool affiche_sol = false;
 pthread_mutex_t mutexQueue;
 pthread_mutex_t mutex;
 
-int *thread_matrix;
-
 int compt = 0;
 
 void * ALL_IS_OK = (void*) 123456789L;
@@ -93,24 +91,6 @@ void *fonctionThread(void * args) {
     }
     printf("thread end\n");
     return ALL_IS_OK;
-}
-
-void init_thread_matrix() {
-    thread_matrix = malloc(nb_threads * sizeof (int));
-
-    for (int i = 0; i < nb_threads; i++) {
-        thread_matrix[i] = 0;
-    }
-}
-
-int get_unused_thread() {
-    for (int i = 0; i < nb_threads; i++) {
-        if (thread_matrix[i] == 0) {
-            return i;
-        }
-    }
-    
-    return -1;
 }
 
 int main(int argc, char **argv) {
@@ -167,10 +147,8 @@ int main(int argc, char **argv) {
     pthread_t threads[nb_threads];
     t_args * thread_args[nb_threads];
     struct tsp_queue queues[nb_threads];
-
-    //initialiser un matrix pour savoir quelles sont les threads qui sont occupes
-    init_thread_matrix();
     
+    //initialiser le struct de données pour chaque thread
     for (int i = 0; i < nb_threads; i++) {
 		thread_args[i] = malloc(sizeof(t_args));
 		init_queue(&queues[i]);
@@ -179,8 +157,6 @@ int main(int argc, char **argv) {
         thread_args[i]->sol = &sol;
         thread_args[i]->sol_len = &sol_len;
     }
-    
-    printf("estructuras asignadas");
     
     //Distribuer les jobs pour chaque thread
     while (!empty_queue(&q)) {
@@ -197,24 +173,19 @@ int main(int argc, char **argv) {
 			}
 		}
 	}
-	printf("Jobs asignados");
 
     /* calculer chacun des travaux */
     for (int i = 0; i < nb_threads; i++) {
-		no_more_jobs(&queues[i]); //TODO arreglar esta chambonada
+		no_more_jobs(&queues[i]);
 		printf("On utilice le thread %d\n", i);
-		thread_matrix[i] = 1;
 		if (pthread_create(&threads[i], NULL, fonctionThread, (void *)thread_args[i])) {
                     printf("error creating thread");
         }
 	}	    
-		
+		 
 	for (int i = 0; i < nb_threads; i++) {
-		if (thread_matrix[i] == 1) {
-            printf("On attend le thread %d\n", i);
-            thread_matrix[i] = 0;
-            pthread_join(threads[i], NULL);
-		}
+        printf("On attend le thread %d\n", i);
+        pthread_join(threads[i], NULL);
 	}
 
     clock_gettime(CLOCK_REALTIME, &t2);
