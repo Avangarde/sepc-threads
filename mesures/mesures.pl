@@ -2,7 +2,7 @@
 
 use warnings;
 use strict;
-use autodie;
+#use autodie;
 use Sys::Hostname;
 
 my $fname= "mesures.csv";

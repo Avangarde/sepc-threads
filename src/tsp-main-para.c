@@ -79,17 +79,17 @@ static void usage(const char *name) {
 }
 
 void *fonctionThread(void * args) {
-	printf("thread start\n");
+    //printf("thread start\n");
     t_args * thread_args = (t_args *) args;
     tsp_path_t solution;
     memset(solution, -1, MAX_TOWNS * sizeof (int));
     solution[0] = 0;
-    while (!empty_queue (thread_args->q)) {
+    while (!empty_queue(thread_args->q)) {
         int hops, len = 0;
         get_job(thread_args->q, solution, &hops, &len);
         tsp(hops, len, solution, thread_args->cuts, *thread_args->sol, thread_args->sol_len);
     }
-    printf("thread end\n");
+    //printf("thread end\n");
     return ALL_IS_OK;
 }
 
@@ -103,7 +103,6 @@ int main(int argc, char **argv) {
     struct timespec t1, t2;
 
     pthread_mutex_init(&mutex, NULL);
-    pthread_mutex_init(&mutexQueue, NULL);
 
     /* lire les arguments */
     int opt;
@@ -143,50 +142,53 @@ int main(int argc, char **argv) {
     /* mettre les travaux dans la file d'attente */
     generate_tsp_jobs(&q, 1, 0, path, &cuts, sol, & sol_len, 3);
     no_more_jobs(&q);
-    
+
     pthread_t threads[nb_threads];
     t_args * thread_args[nb_threads];
     struct tsp_queue queues[nb_threads];
-    
+    long long int thread_cuts [nb_threads];
+
     //initialiser le struct de données pour chaque thread
     for (int i = 0; i < nb_threads; i++) {
-		thread_args[i] = malloc(sizeof(t_args));
-		init_queue(&queues[i]);
+        thread_cuts[i] = 0;
+        thread_args[i] = malloc(sizeof (t_args));
+        init_queue(&queues[i]);
         thread_args[i]->q = &queues[i];
-        thread_args[i]->cuts = &cuts;
+        thread_args[i]->cuts = &thread_cuts[i];
         thread_args[i]->sol = &sol;
         thread_args[i]->sol_len = &sol_len;
     }
-    
+
     //Distribuer les jobs pour chaque thread
     while (!empty_queue(&q)) {
-		for (int i = 0; i < nb_threads; i++) {
-			if (!empty_queue(&q)) {
-				tsp_path_t solution;
+        for (int i = 0; i < nb_threads; i++) {
+            if (!empty_queue(&q)) {
+                tsp_path_t solution;
                 memset(solution, -1, MAX_TOWNS * sizeof (int));
                 solution[0] = 0;
                 int hops, len = 0;
                 get_job(&q, solution, &hops, &len);
-                add_job (&queues[i], solution, hops, len);
-			} else {
-				break;
-			}
-		}
-	}
+                add_job(&queues[i], solution, hops, len);
+            } else {
+                break;
+            }
+        }
+    }
 
     /* calculer chacun des travaux */
     for (int i = 0; i < nb_threads; i++) {
-		no_more_jobs(&queues[i]);
-		printf("On utilice le thread %d\n", i);
-		if (pthread_create(&threads[i], NULL, fonctionThread, (void *)thread_args[i])) {
-                    printf("error creating thread");
+        no_more_jobs(&queues[i]);
+        //printf("On utilice le thread %d\n", i);
+        if (pthread_create(&threads[i], NULL, fonctionThread, (void *) thread_args[i])) {
+            printf("error creating thread");
         }
-	}	    
-		 
-	for (int i = 0; i < nb_threads; i++) {
-        printf("On attend le thread %d\n", i);
+    }
+
+    for (int i = 0; i < nb_threads; i++) {
+        //printf("On attend le thread %d\n", i);
         pthread_join(threads[i], NULL);
-	}
+        cuts += thread_cuts[i];
+    }
 
     clock_gettime(CLOCK_REALTIME, &t2);
     if (affiche_sol)
@@ -196,7 +198,6 @@ int main(int argc, char **argv) {
     printf("<!-- # = %d seed = %ld len = %d threads = %d time = %lld.%03lld ms ( %lld coupures ) -->\n",
             nb_towns, myseed, sol_len, nb_threads,
             perf / 1000000ll, perf % 1000000ll, cuts);
-    pthread_mutex_destroy(&mutexQueue);        
     pthread_mutex_destroy(&mutex);
     return 0;
 }
