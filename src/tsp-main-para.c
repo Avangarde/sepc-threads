@@ -79,7 +79,7 @@ static void usage(const char *name) {
 }
 
 void *fonctionThread(void * args) {
-    //printf("thread start\n");
+    fprintf(stderr,"thread %ld commence\n", pthread_self());
     t_args * thread_args = (t_args *) args;
     tsp_path_t solution;
     memset(solution, -1, MAX_TOWNS * sizeof (int));
@@ -89,7 +89,6 @@ void *fonctionThread(void * args) {
         get_job(thread_args->q, solution, &hops, &len);
         tsp(hops, len, solution, thread_args->cuts, *thread_args->sol, thread_args->sol_len);
     }
-    //printf("thread end\n");
     return ALL_IS_OK;
 }
 
@@ -178,16 +177,19 @@ int main(int argc, char **argv) {
     /* calculer chacun des travaux */
     for (int i = 0; i < nb_threads; i++) {
         no_more_jobs(&queues[i]);
-        //printf("On utilice le thread %d\n", i);
         if (pthread_create(&threads[i], NULL, fonctionThread, (void *) thread_args[i])) {
             printf("error creating thread");
         }
+        fprintf(stderr,"On a créé le thread %ld\n", threads[i]);
     }
-
+    void * status;
     for (int i = 0; i < nb_threads; i++) {
-        //printf("On attend le thread %d\n", i);
-        pthread_join(threads[i], NULL);
-        cuts += thread_cuts[i];
+        fprintf(stderr,"On attend le thread %ld\n", threads[i]);
+        pthread_join(threads[i], &status);
+        if (status == ALL_IS_OK) {
+            fprintf(stderr,"thread %ld fini\n", threads[i]);
+            cuts += thread_cuts[i];
+        }
     }
 
     clock_gettime(CLOCK_REALTIME, &t2);
